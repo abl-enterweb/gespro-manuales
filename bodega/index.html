@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Para el bodeguero y el jefe de bodega: cómo entra el material a la obra contra su orden de compra, cómo sale a cada partida con un vale y cómo se cuenta la bodega sin ver la cifra del sistema.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' rx='4' fill='%232c50c4'/%3E%3Crect x='3' y='11' width='3.5' height='6' rx='0.6' fill='white'/%3E%3Crect x='8.25' y='7' width='3.5' height='10' rx='0.6' fill='white'/%3E%3Crect x='13.5' y='3' width='3.5' height='14' rx='0.6' fill='white'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Manual de bodega</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: índice fijo a la izquierda y una columna de lectura; las capturas
+   se ensanchan más que el texto. Colores de GESPRO (docs/10 §8.6) y el
+   naranjo de los recuadros numerados de las capturas. */
+:root {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --pane: #f6f7fa;
+    --line: #dde1e8;
+    --ink: #131821;
+    --ink-muted: #525d6d;
+    --brand: #2c50c4;
+    --accent-soft: #e7ecfb;
+    --ok: #0b6e3c;
+    --ok-soft: #e0f2e7;
+    --warn: #874c00;
+    --warn-soft: #fcefd6;
+    --bad: #b0161c;
+    --mark: #e8590c;
+    --mark-ink: #ffffff;
+    --shadow: rgb(14 24 44 / 0.10);
+    --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --measure: 42rem;
+    color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+        --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+        --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+        --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+    --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+    --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+    --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1rem/1.65 var(--font-body);
+    padding-inline: 16px;
+    padding-block: 0 4rem;
+}
+.layout {
+    display: grid;
+    gap: 3rem;
+    max-width: 76rem;
+    margin-inline: auto;
+}
+@media (min-width: 64rem) {
+    .layout { grid-template-columns: 15rem minmax(0, 1fr); }
+}
+
+/* Índice */
+.toc {
+    padding-block: 2rem 0;
+    font-size: 0.9rem;
+}
+@media (min-width: 64rem) {
+    .toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 2.5rem; }
+}
+.toc .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; letter-spacing: 0.02em; }
+.toc .logo { width: 2rem; height: 2rem; border-radius: 0.5rem; background: var(--brand); display: grid; place-items: center; }
+.toc .logo svg { width: 1.1rem; height: 1.1rem; }
+.toc .logo rect { fill: var(--surface); }
+.toc p { color: var(--ink-muted); margin: 0.75rem 0 1.25rem; font-size: 0.85rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a {
+    display: grid; grid-template-columns: 1.6rem 1fr; padding: 0.3rem 0.5rem; border-radius: 0.4rem;
+    color: var(--ink-muted); text-decoration: none;
+}
+.toc a::before { content: counter(toc); font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); padding-top: 0.1rem; }
+.toc a:hover, .toc a:focus-visible { background: var(--accent-soft); color: var(--ink); outline: none; }
+
+/* Contenido */
+main { min-width: 0; padding-block: 2.5rem 0; }
+header.hero { max-width: var(--measure); padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin: 0; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; font-weight: 700; margin: 0.4rem 0 0.8rem; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { font-size: 1.12rem; color: var(--ink-muted); margin: 0; }
+.persona {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.25rem; padding: 0.9rem 1rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; font-size: 0.92rem;
+}
+.persona dt { color: var(--ink-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.persona dd { margin: 0; font-weight: 500; }
+
+section { padding-top: 3rem; scroll-margin-top: 1rem; }
+section > :not(figure):not(.wide) { max-width: var(--measure); }
+h2 { font-size: 1.55rem; line-height: 1.25; font-weight: 700; margin: 0 0 0.75rem; text-wrap: balance; }
+h2 .n { font-family: var(--font-mono); font-weight: 500; color: var(--ink-muted); font-size: 1rem; margin-right: 0.6rem; }
+h3 { font-size: 1.1rem; font-weight: 600; margin: 1.75rem 0 0.4rem; }
+p { margin: 0 0 0.9rem; }
+strong { font-weight: 600; }
+.ui { font-weight: 600; white-space: nowrap; }
+code, kbd, .folio { font-family: var(--font-mono); font-size: 0.88em; }
+kbd {
+    padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 0.3rem;
+    background: var(--surface); white-space: nowrap;
+}
+
+figure { margin: 1.25rem 0 1.5rem; max-width: 62rem; }
+figure img {
+    display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 0.6rem;
+    box-shadow: 0 6px 24px -10px var(--shadow); background: var(--surface);
+}
+figure.phone { max-width: 22rem; }
+.phones { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.phones figure { margin: 0; flex: 1 1 15rem; max-width: 20rem; }
+figcaption { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.5rem; }
+
+/* Pasos con el número del recuadro de la captura */
+ol.steps { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.55rem; counter-reset: step; }
+ol.steps > li { counter-increment: step; position: relative; padding-left: 2.4rem; min-height: 1.7rem; }
+ol.steps > li::before {
+    content: counter(step); position: absolute; left: 0; top: 0.05rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--mark); color: var(--mark-ink); font: 600 0.82rem/1.6rem var(--font-body); text-align: center;
+}
+
+.note {
+    display: grid; gap: 0.25rem; padding: 0.85rem 1rem; border-radius: 0.6rem; margin: 1rem 0 1.25rem;
+    background: var(--accent-soft); font-size: 0.95rem;
+}
+.note b { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); }
+.note.warn { background: var(--warn-soft); }
+.note.warn b { color: var(--warn); }
+.note p:last-child { margin: 0; }
+
+dl.terms { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: 0.5rem 1.25rem; margin: 0 0 1rem; font-size: 0.95rem; }
+dl.terms dt { font-weight: 600; }
+dl.terms dd { margin: 0; color: var(--ink-muted); }
+@media (max-width: 34rem) { dl.terms { grid-template-columns: 1fr; } dl.terms dd { margin-bottom: 0.5rem; } }
+
+.table-wrap { overflow-x: auto; max-width: 52rem; margin: 1rem 0 1.25rem; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); background: var(--pane); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.when { color: var(--ink-muted); }
+
+.pair { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); max-width: 52rem; margin: 1rem 0; }
+.pair > div { background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; padding: 1rem; }
+.pair h4 { margin: 0 0 0.35rem; font-size: 1rem; }
+.pair p { margin: 0; font-size: 0.93rem; color: var(--ink-muted); }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 99rem; margin-bottom: 0.4rem; }
+.tag.ok { background: var(--ok-soft); color: var(--ok); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+.tag.bad { background: var(--warn-soft); color: var(--bad); }
+
+details { border-top: 1px solid var(--line); padding-block: 0.8rem; max-width: var(--measure); }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; }
+summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 0.2rem; }
+details p { margin: 0.6rem 0 0; color: var(--ink-muted); }
+
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--ink-muted); font-size: 0.85rem; max-width: var(--measure); }
+a { color: var(--brand); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* El camino de una compra, en pasos con quién los da */
+ol.flow { list-style: none; padding: 0; margin: 1.25rem 0 1.5rem; display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); max-width: 62rem; counter-reset: flow; }
+ol.flow li {
+    counter-increment: flow; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem;
+    padding: 0.75rem 0.8rem 0.8rem; font-size: 0.9rem; line-height: 1.4;
+}
+ol.flow li::before { content: counter(flow, decimal-leading-zero); display: block; font: 500 0.75rem/1 var(--font-mono); color: var(--ink-muted); margin-bottom: 0.45rem; }
+ol.flow li b { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+ol.flow li span { color: var(--ink-muted); font-size: 0.82rem; }
+ol.flow li.mine { border-color: var(--brand); background: var(--accent-soft); }
+.toc .back{display:inline-flex;gap:.35rem;margin-bottom:1rem;color:var(--brand);text-decoration:none;font-weight:600;font-size:.85rem}
+.toc a.back::before{content:none}
+.toc .back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="layout">
+    <nav class="toc" aria-label="Contenido del manual">
+        <a class="back" href="../">← Todos los manuales</a>
+        <div class="brand">
+            <span class="logo" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="3" y="11" width="3.5" height="6" rx="0.6"/><rect x="8.25" y="7" width="3.5" height="10" rx="0.6"/><rect x="13.5" y="3" width="3.5" height="14" rx="0.6"/></svg></span>
+            GESPRO
+        </div>
+        <p>Manual de usuario · bodega</p>
+        <ol>
+            <li><a href="#camino">El material en la obra</a></li>
+            <li><a href="#pendiente">Lo que falta llegar</a></li>
+            <li><a href="#recibir">Recibir contra la orden</a></li>
+            <li><a href="#visar">Visar la recepción</a></li>
+            <li><a href="#stock">Stock y kardex</a></li>
+            <li><a href="#vale">Entregar con un vale</a></li>
+            <li><a href="#inventario">El inventario físico</a></li>
+            <li><a href="#otros">Traspasos, préstamos y bodegas</a></li>
+            <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ol>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <p class="eyebrow">Manual de usuario</p>
+            <h1>Bodega en GESPRO</h1>
+            <p class="lede">Para el bodeguero y el jefe de bodega: cómo entra el material a la obra contra su orden de compra, cómo sale a cada partida con un vale y cómo se cuenta la bodega sin ver la cifra del sistema.</p>
+            <dl class="persona">
+                <div><dt>Roles en GESPRO</dt><dd>Bodeguero · Jefe de bodega</dd></div>
+                <div><dt>Sus pantallas</dt><dd>Recepciones · Vales de salida · Stock y kardex · Inventarios</dd></div>
+                <div><dt>Ejemplos con</dt><dd>Luis Cárcamo y Héctor Sandoval · obra 1201 Edificio Mirador del Lago</dd></div>
+            </dl>
+        </header>
+
+        <section id="camino">
+            <h2><span class="n">1</span>El material en la obra</h2>
+            <p>La bodega es donde la compra se vuelve costo. Lo que llega entra al precio de la orden; lo que sale a una partida se carga a esa partida al precio promedio del momento. Los pasos destacados son los de este manual.</p>
+            <ol class="flow">
+                <li><b>Orden emitida</b><span>Abastecimiento la envía al proveedor.</span></li>
+                <li class="mine"><b>Recepción</b><span>El bodeguero registra lo que llegó, con su guía.</span></li>
+                <li class="mine"><b>Visación</b><span>El jefe de bodega y el profesional de obra la aprueban.</span></li>
+                <li class="mine"><b>Stock</b><span>Lo inventariable queda en bodega a su precio promedio.</span></li>
+                <li class="mine"><b>Vale de salida</b><span>El material sale a una partida y se vuelve costo.</span></li>
+                <li class="mine"><b>Inventario</b><span>Se cuenta a ciegas y cada diferencia se explica.</span></li>
+                <li><b>Factura</b><span>Finanzas la registra contra la recepción.</span></li>
+            </ol>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Quién</th><th>Qué hace en GESPRO</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Bodeguero</strong></td><td>Recibe contra la orden o por compra directa, entrega con vales, registra devoluciones, pide traspasos y préstamos, y cuenta los inventarios.</td></tr>
+                        <tr><td><strong>Jefe de bodega</strong></td><td>Visa recepciones, traspasos y préstamos; arma los inventarios y explica sus diferencias; anula recepciones y vales; administra las bodegas de la obra.</td></tr>
+                        <tr><td><strong>Profesional de obra</strong></td><td>Da la última firma de la recepción y visa el inventario junto con control de gestión.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="pendiente">
+            <h2><span class="n">2</span>Lo que falta llegar</h2>
+            <p>En <span class="ui">Bodega › Recepciones › Pendiente de recibir</span> están las líneas de las órdenes emitidas que todavía no llegan completas, ordenadas por la fecha en que la obra las necesita. Es la lista para el día: lo que debería aparecer en la puerta.</p>
+            <figure>
+                <img src="img/01-pendientes.png" alt="Pendiente de recibir con dos líneas: hormigón de la OC-2026-000012 y ladrillo de la OC-2026-000013, con lo pedido, lo recibido y lo pendiente." width="1440" height="340" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Cada línea pendiente:</strong> fecha requerida, orden, proveedor, recurso y partida.</li>
+                <li><strong>La orden</strong>, para ver sus condiciones y su PDF.</li>
+                <li><strong>Pendiente:</strong> lo pedido menos lo ya recibido en recepciones confirmadas.</li>
+            </ol>
+        </section>
+
+        <section id="recibir">
+            <h2><span class="n">3</span>Recibir contra la orden</h2>
+            <p>Cuando llega el camión, el bodeguero abre <span class="ui">Bodega › Recepciones</span> y crea la recepción. GESPRO trae las líneas de la orden con lo que falta recibir, así que solo se corrige lo que llegó distinto.</p>
+            <figure>
+                <img src="img/02-nueva-recepcion.png" alt="Formulario Nueva recepción con el tipo Contra orden de compra, la OC-2026-000012 elegida, la bodega y el botón Crear recepción." width="1440" height="400" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Tipo:</strong> <span class="ui">Contra orden de compra</span>, o <span class="ui">Compra directa</span> si no hubo orden (por ejemplo, una compra menor en ferretería).</li>
+                <li><strong>La orden de compra.</strong> Solo aparecen las emitidas que aún tienen algo por llegar.</li>
+                <li><strong>La bodega</strong> donde entra el material.</li>
+                <li><strong>Crear recepción</strong> abre el borrador con las líneas de la orden.</li>
+            </ol>
+            <figure>
+                <img src="img/03-recepcion.png" alt="Recepción RE-2026-000013 en borrador: número de guía, 331,25 m³ recibidos, 0,25 rechazados por fraguado en el camión, la guía por adjuntar y el botón Enviar a visación." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El documento con que llegó:</strong> guía de despacho o factura, con su número y fecha. Sin número no se puede enviar a visación.</li>
+                <li><strong>Llegó:</strong> la cantidad que bajó del camión. Debajo, cuánto admite todavía la orden, con su tolerancia.</li>
+                <li><strong>Rechazado:</strong> lo que llegó pero no se acepta. No entra a bodega ni a costo.</li>
+                <li><strong>Motivo</strong> del rechazo. Es obligatorio cuando hay algo rechazado.</li>
+                <li><strong>La guía escaneada</strong> o fotografiada, en PDF o imagen.</li>
+                <li><strong>Adjuntar</strong> la sube al documento. Queda con su huella y nadie la reemplaza: una versión nueva se suma a la anterior.</li>
+                <li><strong>Enviar a visación</strong> guarda y manda la recepción al jefe de bodega.</li>
+            </ol>
+            <p class="note">El hormigón se carga directo a su partida, porque no se guarda en bodega. Un recurso que controla stock, como el ladrillo, entra a bodega y se vuelve costo recién cuando sale con un vale.</p>
+        </section>
+
+        <section id="visar">
+            <h2><span class="n">4</span>Visar la recepción</h2>
+            <p>La recepción la visan el jefe de bodega y después el profesional de obra. Llega a la <span class="ui">Bandeja de pendientes</span> de cada uno; desde ahí se abre la ficha.</p>
+            <figure>
+                <img src="img/04-visar-recepcion.png" alt="Ficha de la recepción RE-2026-000013 vista por el jefe de bodega, con las líneas, el adjunto, la cadena de visación y el botón Aprobar." width="1440" height="720" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La recepción:</strong> folio, orden, proveedor, bodega y quién recibió. Al lado, su estado y el monto neto aceptado.</li>
+                <li><strong>Las líneas:</strong> lo que llegó, lo rechazado y por qué.</li>
+                <li><strong>Adjuntos:</strong> la guía, para compararla con lo registrado.</li>
+                <li><strong>La cadena de visación:</strong> jefe de bodega y profesional de obra.</li>
+                <li><strong>Aprobar.</strong> Con la última firma, el material entra a bodega al precio de la orden y queda devengado en su partida; finanzas registra la factura contra esta recepción.</li>
+            </ol>
+            <p>Si algo no cuadra, <span class="ui">Observar</span> la devuelve al bodeguero con el motivo. Una recepción confirmada que estaba mal se anula: GESPRO revierte el stock, el costo y el compromiso con fecha de hoy, sin borrar nada.</p>
+        </section>
+
+        <section id="stock">
+            <h2><span class="n">5</span>Stock y kardex</h2>
+            <p><span class="ui">Bodega › Stock y kardex</span> muestra lo que hay en cada bodega, valorizado a precio promedio ponderado (PPP): cada entrada recalcula el promedio y cada salida se valoriza al promedio de ese momento.</p>
+            <figure>
+                <img src="img/05-stock.png" alt="Stock de la bodega central con fierro, ladrillo y planchas de yeso-cartón, su cantidad, PPP, valor y el enlace al kardex." width="1440" height="420" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Inventario valorizado:</strong> lo que vale todo lo que hay en bodega.</li>
+                <li><strong>Cada recurso</strong> por bodega, con su cantidad en la unidad base.</li>
+                <li><strong>PPP:</strong> el precio promedio con que saldrá la próxima unidad.</li>
+                <li><strong>Kardex</strong> abre el libro de ese recurso.</li>
+            </ol>
+            <figure>
+                <img src="img/06-kardex.png" alt="Kardex del ladrillo fiscal con recepciones y vales de salida, la última recepción RE-2026-000012 y el saldo con su PPP." width="1440" height="520" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El saldo:</strong> cantidad, PPP y valor de hoy.</li>
+                <li><strong>Cada movimiento</strong> en el orden en que se registró, con entrada, salida, costo, saldo y PPP después del movimiento.</li>
+                <li><strong>El documento</strong> que lo originó, para abrirlo.</li>
+            </ol>
+            <p>El kardex no se edita. Un error se corrige con el documento que corresponde: una devolución, una anulación o un ajuste de inventario, y cada uno queda como un movimiento más.</p>
+        </section>
+
+        <section id="vale">
+            <h2><span class="n">6</span>Entregar con un vale</h2>
+            <p>Todo lo que sale de bodega sale con un vale, a una partida. En <span class="ui">Bodega › Vales de salida</span> se crea el vale con la partida que lo consume y quién lo retira.</p>
+            <figure>
+                <img src="img/07-nuevo-vale.png" alt="Formulario Nuevo vale con la bodega, la partida 2.5 Albañilería de ladrillo y Matías Vidal como quien retira." width="1440" height="420" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La bodega</strong> de donde sale.</li>
+                <li><strong>La partida</strong> a la que se carga el costo.</li>
+                <li><strong>Quién retira:</strong> una persona de la obra, u otra persona cuyo nombre se escribe en el vale.</li>
+                <li><strong>Crear vale</strong> abre el borrador.</li>
+            </ol>
+            <figure>
+                <img src="img/08-vale.png" alt="Vale VS-2026-000009 en borrador con el frente de trabajo, los recursos disponibles en la bodega, 6.000 unidades de ladrillo y el botón Entregar." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Frente de trabajo:</strong> dónde se usará. Ayuda a explicar el consumo después.</li>
+                <li><strong>Lo que hay en esta bodega.</strong> Toca un recurso para agregarlo al vale.</li>
+                <li><strong>La cantidad</strong> que se entrega. No puede pasar de lo que hay.</li>
+                <li><strong>Entregar.</strong> El vale no se visa: al entregarlo, el costo queda en la partida y el PDF se genera para la firma de quien retira.</li>
+            </ol>
+            <figure>
+                <img src="img/09-vale-entregado.png" alt="Vale entregado con el botón PDF, la línea al PPP congelado de 644 y el formulario para registrar una devolución." width="1440" height="700" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>PDF:</strong> el vale para imprimir y firmar. Se guarda como adjunto del vale.</li>
+                <li><strong>PPP congelado:</strong> el precio con que salió cada recurso. No cambia aunque después entre material más caro o más barato.</li>
+                <li><strong>Devolver:</strong> si sobró material, la cantidad que vuelve a bodega.</li>
+                <li><strong>Registrar devolución</strong>, con su motivo. Vuelve al mismo precio con que salió y descuenta el costo de la partida.</li>
+            </ol>
+        </section>
+
+        <section id="inventario">
+            <h2><span class="n">7</span>El inventario físico</h2>
+            <p>El inventario compara lo que hay en la bodega con lo que dice GESPRO. Es ciego: quien cuenta no ve la cantidad del sistema, para que no la copie. Lo arma el jefe de bodega, lo cuenta el bodeguero y lo visan el profesional de obra y control de gestión, que no pueden haber contado.</p>
+            <figure>
+                <img src="img/10-armar-inventario.png" alt="Inventarios físicos con el formulario para armar uno, bodega y alcance, y un inventario anterior regularizado en la lista." width="1440" height="420" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La bodega</strong> que se cuenta.</li>
+                <li><strong>El alcance:</strong> toda la bodega o una familia de recursos.</li>
+                <li><strong>Armar inventario</strong> lista los recursos. Antes de empezar se pueden quitar o agregar; al pulsar <span class="ui">Empezar el conteo</span>, la cantidad del sistema queda congelada en ese instante.</li>
+            </ol>
+            <figure class="phone">
+                <img src="img/11-telefono-conteo.png" alt="Conteo en el teléfono: una tarjeta por recurso con la cantidad contada, su unidad y el botón Confirmar o Corregir." width="390" height="844" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Una tarjeta por recurso</strong>, en verde cuando ya está contado. Está pensado para el teléfono, recorriendo la bodega.</li>
+                <li><strong>Lo que se ve en la bodega</strong>, en la unidad indicada.</li>
+                <li><strong>Confirmar.</strong> Se puede corregir mientras el conteo esté abierto.</li>
+            </ol>
+            <figure>
+                <img src="img/12-diferencias.png" alt="Inventario IF-2026-000002 en revisión: el ladrillo con 20 unidades menos, la causa Merma, la partida 2.5 y el botón Enviar a visación." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La diferencia:</strong> lo contado menos lo del sistema, y a la derecha su valor al PPP. Si parece un error de conteo, marca la línea en <span class="ui">Recontar</span> y vuelve a contarse.</li>
+                <li><strong>La causa:</strong> merma, pérdida, robo, consumo o devolución no digitados, error de unidad u otra.</li>
+                <li><strong>La partida</strong> que absorbe la diferencia, con una nota.</li>
+                <li><strong>Enviar a visación.</strong> Con las firmas, cada diferencia queda como un ajuste de stock y un costo en su partida.</li>
+            </ol>
+        </section>
+
+        <section id="otros">
+            <h2><span class="n">8</span>Traspasos, préstamos y bodegas</h2>
+            <ul>
+                <li><strong>Traspasos</strong> (<span class="ui">Bodega › Traspasos</span>): mueven material entre dos bodegas de la misma obra, al precio promedio de la de origen. No tocan el costo; los visa el jefe de bodega.</li>
+                <li><strong>Préstamos</strong> (<span class="ui">Bodega › Préstamos</span>): material que sale a otra obra. Sale a su valor y queda en la columna Préstamos del Informe COPRE hasta que se liquida, por devolución o por factura entre obras.</li>
+                <li><strong>Bodegas</strong> (<span class="ui">Bodega › Bodegas</span>): el jefe de bodega crea las bodegas de la obra y sus ubicaciones (estante, patio, contenedor), que se eligen al recibir.</li>
+            </ul>
+        </section>
+
+        <section id="preguntas">
+            <h2><span class="n">9</span>Preguntas frecuentes</h2>
+            <details>
+                <summary>Llegó más de lo que pidió la orden.</summary>
+                <p>Se recibe hasta lo pedido más la tolerancia de la orden; GESPRO lo indica bajo cada línea. Lo que pase de eso no se puede recibir: hay que rechazarlo o pedir a abastecimiento que modifique la orden.</p>
+            </details>
+            <details>
+                <summary>El proveedor trajo la orden en dos camiones.</summary>
+                <p>Haz una recepción por cada llegada. La orden queda <strong>recibida en parte</strong> con la primera y <strong>recibida</strong> cuando llega todo.</p>
+            </details>
+            <details>
+                <summary>Hay que devolver material al proveedor.</summary>
+                <p>En la recepción confirmada, indica cuánto devuelves de cada línea y el motivo, y pulsa <span class="ui">Devolver al proveedor</span>. Sale de bodega al valor con que entró y el compromiso de la orden vuelve a abrirse.</p>
+            </details>
+            <details>
+                <summary>Me equivoqué de partida en un vale ya entregado.</summary>
+                <p>Registra la devolución del vale y entrega de nuevo con un vale a la partida correcta. Así el kardex y el costo de cada partida cuentan la historia completa.</p>
+            </details>
+            <details>
+                <summary>¿Por qué no veo la cantidad del sistema al contar?</summary>
+                <p>Porque el inventario es ciego. La cantidad del sistema aparece cuando el jefe de bodega termina el conteo y revisa las diferencias.</p>
+            </details>
+            <details>
+                <summary>¿Por qué el hormigón no aparece en el stock?</summary>
+                <p>Porque no se guarda en bodega: se carga directo a su partida al confirmarse la recepción. Qué recurso controla stock lo define el catálogo, no la bodega.</p>
+            </details>
+        </section>
+
+        <footer>
+            GESPRO · Manual de bodega · Las capturas son de la demostración, con datos ficticios de la constructora Altamira.
+        </footer>
+    </main>
+</div>
+</body>
+</html>
