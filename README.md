@@ -1,9 +1,10 @@
 # Manuales de GESPRO
 
-Los cinco manuales de usuario de GESPRO, uno por rol, como sitio estático:
+Los manuales de usuario de GESPRO, uno por rol, como sitio estático:
 
 | Manual | Carpeta |
 | --- | --- |
+| Profesional de terreno | `terreno/` |
 | Administración de obra | `administracion-de-obra/` |
 | Abastecimiento | `abastecimiento/` |
 | Bodega | `bodega/` |

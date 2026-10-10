@@ -7,7 +7,9 @@ import re, shutil, pathlib, html, sys
 SRC = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else r'C:\xampp\htdocs\gespro\docs\manual')
 DST = pathlib.Path(__file__).resolve().parent.parent
 
-ORDER = ['administracion-de-obra', 'abastecimiento', 'bodega', 'control-de-gestion', 'gerencia']
+ORDER = ['terreno', 'administracion-de-obra', 'abastecimiento', 'bodega', 'control-de-gestion', 'gerencia']
+
+COUNT = {5: 'Cinco', 6: 'Seis', 7: 'Siete', 8: 'Ocho', 9: 'Nueve', 10: 'Diez', 11: 'Once'}[len(ORDER)]
 
 LOGO = ('<svg viewBox="0 0 20 20"><rect x="3" y="11" width="3.5" height="6" rx="0.6"/>'
         '<rect x="8.25" y="7" width="3.5" height="10" rx="0.6"/><rect x="13.5" y="3" width="3.5" height="14" rx="0.6"/></svg>')
@@ -34,6 +36,7 @@ if DST.exists():
 DST.mkdir(exist_ok=True)
 
 cards = []
+names = []
 for i, slug in enumerate(ORDER, 1):
     s = (SRC / slug / 'index.html').read_text(encoding='utf8')
     cut = s.index('</style>') + len('</style>')
@@ -43,6 +46,7 @@ for i, slug in enumerate(ORDER, 1):
     lede = re.sub(r'\s+', ' ', re.search(r'<p class="lede">(.*?)</p>', body, re.S).group(1))
     rol = re.search(r'<dt>Rol(?:es)? en GESPRO</dt><dd>(.*?)</dd>', body).group(1)
     screens = re.search(r'<dt>(?:Sus pantallas|Su pantalla principal)</dt><dd>(.*?)</dd>', body).group(1)
+    names.append(h1.replace(' en GESPRO', '').removeprefix('Manual de ').removeprefix('Manual del '))
     first_img = re.search(r'src="(img/[^"]+)"', body).group(1)
 
     # Volver a la portada desde el índice de cada manual.
@@ -132,7 +136,7 @@ portada_body = f'''<div class="wrap">
     <header class="hero">
         <p class="eyebrow">Manuales de usuario</p>
         <h1>Cada rol de la obra, paso a paso</h1>
-        <p class="intro">Cinco manuales con las pantallas reales de GESPRO: desde quien aprueba en la obra hasta la gerencia que cierra el mes. Los ejemplos usan los datos de demostración: el holding Altamira y su obra 1201 Edificio Mirador del Lago.</p>
+        <p class="intro">{COUNT} manuales con las pantallas reales de GESPRO: desde quien mide en terreno hasta la gerencia que cierra el mes. Los ejemplos usan los datos de demostración: el holding Altamira y su obra 1201 Edificio Mirador del Lago.</p>
     </header>
     <ol class="grid">
 {chr(10).join(cards)}
@@ -143,6 +147,6 @@ portada_body = f'''<div class="wrap">
 </div>'''
 
 (DST / 'index.html').write_text(
-    page(portada_head, portada_body, 'Manuales de usuario de GESPRO por rol: administración de obra, abastecimiento, bodega, control de gestión y gerencia.'),
+    page(portada_head, portada_body, 'Manuales de usuario de GESPRO por rol: ' + ', '.join(n.lower() for n in names[:-1]) + ' y ' + names[-1].lower() + '.'),
     encoding='utf8', newline='\n')
 print('ok')
