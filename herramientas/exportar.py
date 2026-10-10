@@ -7,7 +7,7 @@ import re, shutil, pathlib, html, sys
 SRC = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else r'C:\xampp\htdocs\gespro\docs\manual')
 DST = pathlib.Path(__file__).resolve().parent.parent
 
-ORDER = ['terreno', 'administracion-de-obra', 'jefe-administrativo', 'presupuesto', 'finanzas', 'abastecimiento', 'bodega', 'control-de-gestion', 'gerencia']
+ORDER = ['terreno', 'administracion-de-obra', 'jefe-administrativo', 'presupuesto', 'finanzas', 'abastecimiento', 'bodega', 'control-de-gestion', 'gerente-construccion', 'gerencia']
 
 COUNT = {5: 'Cinco', 6: 'Seis', 7: 'Siete', 8: 'Ocho', 9: 'Nueve', 10: 'Diez', 11: 'Once'}[len(ORDER)]
 
