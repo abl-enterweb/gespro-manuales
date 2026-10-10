@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Para quien recibe las facturas de los proveedores y subcontratistas: registrarlas, conciliarlas con lo que la obra recibió o aprobó, ponerlas en disputa cuando no corresponden y cuidar las tasas de cambio con que se valorizan los documentos.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' rx='4' fill='%232c50c4'/%3E%3Crect x='3' y='11' width='3.5' height='6' rx='0.6' fill='white'/%3E%3Crect x='8.25' y='7' width='3.5' height='10' rx='0.6' fill='white'/%3E%3Crect x='13.5' y='3' width='3.5' height='14' rx='0.6' fill='white'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Manual de finanzas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: índice fijo a la izquierda y una columna de lectura; las capturas
+   se ensanchan más que el texto. Colores de GESPRO (docs/10 §8.6) y el
+   naranjo de los recuadros numerados de las capturas. */
+:root {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --pane: #f6f7fa;
+    --line: #dde1e8;
+    --ink: #131821;
+    --ink-muted: #525d6d;
+    --brand: #2c50c4;
+    --accent-soft: #e7ecfb;
+    --ok: #0b6e3c;
+    --ok-soft: #e0f2e7;
+    --warn: #874c00;
+    --warn-soft: #fcefd6;
+    --bad: #b0161c;
+    --mark: #e8590c;
+    --mark-ink: #ffffff;
+    --shadow: rgb(14 24 44 / 0.10);
+    --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --measure: 42rem;
+    color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+        --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+        --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+        --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+    --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+    --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+    --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1rem/1.65 var(--font-body);
+    padding-inline: 16px;
+    padding-block: 0 4rem;
+}
+.layout {
+    display: grid;
+    gap: 3rem;
+    max-width: 76rem;
+    margin-inline: auto;
+}
+@media (min-width: 64rem) {
+    .layout { grid-template-columns: 15rem minmax(0, 1fr); }
+}
+
+/* Índice */
+.toc {
+    padding-block: 2rem 0;
+    font-size: 0.9rem;
+}
+@media (min-width: 64rem) {
+    .toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 2.5rem; }
+}
+.toc .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; letter-spacing: 0.02em; }
+.toc .logo { width: 2rem; height: 2rem; border-radius: 0.5rem; background: var(--brand); display: grid; place-items: center; }
+.toc .logo svg { width: 1.1rem; height: 1.1rem; }
+.toc .logo rect { fill: var(--surface); }
+.toc p { color: var(--ink-muted); margin: 0.75rem 0 1.25rem; font-size: 0.85rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a {
+    display: grid; grid-template-columns: 1.6rem 1fr; padding: 0.3rem 0.5rem; border-radius: 0.4rem;
+    color: var(--ink-muted); text-decoration: none;
+}
+.toc a::before { content: counter(toc); font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); padding-top: 0.1rem; }
+.toc a:hover, .toc a:focus-visible { background: var(--accent-soft); color: var(--ink); outline: none; }
+
+/* Contenido */
+main { min-width: 0; padding-block: 2.5rem 0; }
+header.hero { max-width: var(--measure); padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin: 0; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; font-weight: 700; margin: 0.4rem 0 0.8rem; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { font-size: 1.12rem; color: var(--ink-muted); margin: 0; }
+.persona {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.25rem; padding: 0.9rem 1rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; font-size: 0.92rem;
+}
+.persona dt { color: var(--ink-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.persona dd { margin: 0; font-weight: 500; }
+
+section { padding-top: 3rem; scroll-margin-top: 1rem; }
+section > :not(figure):not(.wide) { max-width: var(--measure); }
+h2 { font-size: 1.55rem; line-height: 1.25; font-weight: 700; margin: 0 0 0.75rem; text-wrap: balance; }
+h2 .n { font-family: var(--font-mono); font-weight: 500; color: var(--ink-muted); font-size: 1rem; margin-right: 0.6rem; }
+h3 { font-size: 1.1rem; font-weight: 600; margin: 1.75rem 0 0.4rem; }
+p { margin: 0 0 0.9rem; }
+strong { font-weight: 600; }
+.ui { font-weight: 600; white-space: nowrap; }
+code, kbd, .folio { font-family: var(--font-mono); font-size: 0.88em; }
+kbd {
+    padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 0.3rem;
+    background: var(--surface); white-space: nowrap;
+}
+
+figure { margin: 1.25rem 0 1.5rem; max-width: 62rem; }
+figure img {
+    display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 0.6rem;
+    box-shadow: 0 6px 24px -10px var(--shadow); background: var(--surface);
+}
+figure.phone { max-width: 22rem; }
+.phones { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.phones figure { margin: 0; flex: 1 1 15rem; max-width: 20rem; }
+figcaption { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.5rem; }
+
+/* Pasos con el número del recuadro de la captura */
+ol.steps { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.55rem; counter-reset: step; }
+ol.steps > li { counter-increment: step; position: relative; padding-left: 2.4rem; min-height: 1.7rem; }
+ol.steps > li::before {
+    content: counter(step); position: absolute; left: 0; top: 0.05rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--mark); color: var(--mark-ink); font: 600 0.82rem/1.6rem var(--font-body); text-align: center;
+}
+
+.note {
+    display: grid; gap: 0.25rem; padding: 0.85rem 1rem; border-radius: 0.6rem; margin: 1rem 0 1.25rem;
+    background: var(--accent-soft); font-size: 0.95rem;
+}
+.note b { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); }
+.note.warn { background: var(--warn-soft); }
+.note.warn b { color: var(--warn); }
+.note p:last-child { margin: 0; }
+
+dl.terms { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: 0.5rem 1.25rem; margin: 0 0 1rem; font-size: 0.95rem; }
+dl.terms dt { font-weight: 600; }
+dl.terms dd { margin: 0; color: var(--ink-muted); }
+@media (max-width: 34rem) { dl.terms { grid-template-columns: 1fr; } dl.terms dd { margin-bottom: 0.5rem; } }
+
+.table-wrap { overflow-x: auto; max-width: 52rem; margin: 1rem 0 1.25rem; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); background: var(--pane); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.when { color: var(--ink-muted); }
+
+.pair { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); max-width: 52rem; margin: 1rem 0; }
+.pair > div { background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; padding: 1rem; }
+.pair h4 { margin: 0 0 0.35rem; font-size: 1rem; }
+.pair p { margin: 0; font-size: 0.93rem; color: var(--ink-muted); }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 99rem; margin-bottom: 0.4rem; }
+.tag.ok { background: var(--ok-soft); color: var(--ok); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+.tag.bad { background: var(--warn-soft); color: var(--bad); }
+
+details { border-top: 1px solid var(--line); padding-block: 0.8rem; max-width: var(--measure); }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; }
+summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 0.2rem; }
+details p { margin: 0.6rem 0 0; color: var(--ink-muted); }
+
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--ink-muted); font-size: 0.85rem; max-width: var(--measure); }
+a { color: var(--brand); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* El camino de una compra, en pasos con quién los da */
+ol.flow { list-style: none; padding: 0; margin: 1.25rem 0 1.5rem; display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); max-width: 62rem; counter-reset: flow; }
+ol.flow li {
+    counter-increment: flow; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem;
+    padding: 0.75rem 0.8rem 0.8rem; font-size: 0.9rem; line-height: 1.4;
+}
+ol.flow li::before { content: counter(flow, decimal-leading-zero); display: block; font: 500 0.75rem/1 var(--font-mono); color: var(--ink-muted); margin-bottom: 0.45rem; }
+ol.flow li b { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+ol.flow li span { color: var(--ink-muted); font-size: 0.82rem; }
+ol.flow li.mine { border-color: var(--brand); background: var(--accent-soft); }
+.toc .back{display:inline-flex;gap:.35rem;margin-bottom:1rem;color:var(--brand);text-decoration:none;font-weight:600;font-size:.85rem}
+.toc a.back::before{content:none}
+.toc .back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="layout">
+    <nav class="toc" aria-label="Contenido del manual">
+        <a class="back" href="../">← Todos los manuales</a>
+        <div class="brand">
+            <span class="logo" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="3" y="11" width="3.5" height="6" rx="0.6"/><rect x="8.25" y="7" width="3.5" height="10" rx="0.6"/><rect x="13.5" y="3" width="3.5" height="14" rx="0.6"/></svg></span>
+            GESPRO
+        </div>
+        <p>Manual de usuario · finanzas</p>
+        <ol>
+            <li><a href="#rol">Lo que hace finanzas</a></li>
+            <li><a href="#inicio">Las obras del holding</a></li>
+            <li><a href="#sin-factura">Lo devengado sin factura</a></li>
+            <li><a href="#conciliar">Registrar y conciliar una factura</a></li>
+            <li><a href="#disputa">Una factura en disputa</a></li>
+            <li><a href="#tasas">Las tasas de cambio</a></li>
+            <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ol>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <p class="eyebrow">Manual de usuario</p>
+            <h1>Finanzas en GESPRO</h1>
+            <p class="lede">Para quien recibe las facturas de los proveedores y subcontratistas: registrarlas, conciliarlas con lo que la obra recibió o aprobó, ponerlas en disputa cuando no corresponden y cuidar las tasas de cambio con que se valorizan los documentos.</p>
+            <dl class="persona">
+                <div><dt>Rol en GESPRO</dt><dd>Finanzas</dd></div>
+                <div><dt>Sus pantallas</dt><dd>Inicio · Facturas · Tasas de cambio</dd></div>
+                <div><dt>Ejemplos con</dt><dd>Lorena Paredes · obra 1201 Edificio Mirador del Lago</dd></div>
+            </dl>
+        </header>
+
+        <section id="rol">
+            <h2><span class="n">1</span>Lo que hace finanzas</h2>
+            <p>En GESPRO el costo nace cuando la obra recibe o aprueba, no cuando llega la factura: una recepción confirmada o un estado de pago aprobado ya están en el libro de costos. Finanzas registra la factura y la concilia con ese documento, para que todo lo devengado quede facturado. Los pasos destacados son los de este manual.</p>
+            <ol class="flow">
+                <li><b>Devengo</b><span>Bodega recibe o la obra aprueba el estado de pago.</span></li>
+                <li class="mine"><b>Registrar la factura</b><span>Proveedor, número, neto e IVA.</span></li>
+                <li class="mine"><b>Conciliar</b><span>Con la recepción o el estado de pago.</span></li>
+                <li class="mine"><b>Disputa</b><span>Cuando la factura no corresponde.</span></li>
+                <li><b>Cierre del mes</b><span>Avisa lo devengado sin factura.</span></li>
+            </ol>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Quién</th><th>Qué hace con lo de finanzas</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Bodega</strong></td><td>Confirma las recepciones que las facturas de materiales vienen a cobrar.</td></tr>
+                        <tr><td><strong>Cadena del estado de pago</strong></td><td>Aprueba lo que cobra el subcontratista; recién entonces su factura se concilia.</td></tr>
+                        <tr><td><strong>Control de gestión</strong></td><td>Ve en el cierre del mes lo recibido sin factura y las facturas sin conciliar.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="inicio">
+            <h2><span class="n">2</span>Las obras del holding</h2>
+            <p>Finanzas ve todas las obras de las empresas del holding, cada una con sus cifras de control a hoy.</p>
+            <figure>
+                <img src="img/01-inicio.png" alt="Inicio de Lorena Paredes con las cuatro obras de Altamira Construcciones y Altamira Postventa, su avance, presupuesto, costo real, proyectado y desviación." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Tus obras</strong>, agrupadas por empresa: avance, presupuesto, costo real, lo proyectado al término y la desviación. La flecha abre el panel de cada obra; abajo, los accesos para empezar.</li>
+            </ol>
+        </section>
+
+        <section id="sin-factura">
+            <h2><span class="n">3</span>Lo devengado sin factura</h2>
+            <p>En <span class="ui">Control › Facturas</span> están las facturas de la obra y, al final, lo que ya es costo y todavía no tiene factura.</p>
+            <figure>
+                <img src="img/02-sin-factura.png" alt="Devengado sin factura: la recepción RE-2026-000004 de Premix Reloncaví del 12-08-2026 por $ 45.291.813." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Devengado sin factura</strong>: el documento, el proveedor al que se le pide la factura, su fecha y el monto. El folio abre la recepción o el estado de pago.</li>
+            </ol>
+        </section>
+
+        <section id="conciliar">
+            <h2><span class="n">4</span>Registrar y conciliar una factura</h2>
+            <p>La factura de Premix Reloncaví llegó. Se registra arriba, en la misma pantalla.</p>
+            <figure>
+                <img src="img/03-registrar.png" alt="Formulario de factura con el proveedor Premix Reloncaví, el número 48117, el neto $ 45.291.813 y el IVA $ 8.605.444." width="1440" height="460" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El proveedor.</strong> Debajo, el tipo de documento: factura, factura electrónica, nota de crédito o de débito, boleta de honorarios.</li>
+                <li><strong>El número</strong> del documento, y su fecha de emisión.</li>
+                <li><strong>El neto</strong>, que es lo que se concilia.</li>
+                <li><strong>El IVA.</strong></li>
+                <li><strong>Registrar factura</strong> abre su ficha.</li>
+            </ol>
+            <figure>
+                <img src="img/04-conciliar.png" alt="Ficha de la factura 48117 con neto, IVA, total y conciliado en cero, y la recepción RE-2026-000004 del proveedor por facturar con el monto a conciliar." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Los montos</strong> de la factura y cuánto lleva conciliado.</li>
+                <li><strong>Lo devengado del proveedor sin facturar</strong>: GESPRO propone conciliar lo pendiente de cada documento, en pesos enteros y sin pasar lo que le queda a la factura. <span class="ui">Conciliar</span> lo une; una factura puede cubrir varios documentos, o una parte de uno.</li>
+            </ol>
+            <figure>
+                <img src="img/05-conciliada.png" alt="Factura 48117 conciliada con la recepción RE-2026-000004 por $ 45.291.813 y el PDF de la factura adjunto." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Conciliada</strong>: lo conciliado es igual al neto.</li>
+                <li><strong>La conciliación</strong>, con el documento y su monto. <span class="ui">Quitar</span> la deshace. Abajo se adjunta el PDF o el XML de la factura.</li>
+            </ol>
+            <p class="note"><b>Para tener en cuenta</b>Registrar o conciliar una factura no cambia el costo: el devengo ya está en el libro. Lo que cambia es que la recepción deja de aparecer como sin factura.</p>
+        </section>
+
+        <section id="disputa">
+            <h2><span class="n">5</span>Una factura en disputa</h2>
+            <p>Eléctrica Llanquihue facturó el estado de pago N° 4, que todavía está en visación. No hay nada que conciliar: la factura se pone en disputa con el motivo.</p>
+            <figure>
+                <img src="img/06-disputa.png" alt="Factura 211090 de Eléctrica Llanquihue sin devengado por facturar y el motivo de la disputa escrito." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Sin devengado</strong>: el proveedor no tiene recepciones ni estados de pago aprobados por facturar.</li>
+                <li><strong>El motivo</strong> de la disputa.</li>
+                <li><strong>Poner en disputa</strong> la marca como disputada. Cuando el estado de pago se apruebe, <span class="ui">Cerrar la disputa</span> la devuelve y se concilia. Si la factura no corresponde, <span class="ui">Anular</span>, también con su motivo.</li>
+            </ol>
+        </section>
+
+        <section id="tasas">
+            <h2><span class="n">6</span>Las tasas de cambio</h2>
+            <p>Un documento en UF, dólares o euros se valoriza con la tasa de su propio día. En <span class="ui">Catálogos › Tasas de cambio</span> están las de los últimos 60 días.</p>
+            <figure>
+                <img src="img/07-tasas.png" alt="Tasas de cambio de la unidad de fomento con el formulario para registrar o corregir y la UF de los últimos días." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Registrar o corregir.</strong> La UF, el dólar y el euro se cargan solos cada mañana; aquí se registra una que faltó. Una corrección deja una fila nueva y la anterior queda, para explicar los documentos que la usaron.</li>
+                <li><strong>Las tasas</strong>, con su origen. Arriba a la derecha se elige la moneda.</li>
+            </ol>
+        </section>
+
+        <section id="preguntas">
+            <h2><span class="n">7</span>Preguntas frecuentes</h2>
+            <details>
+                <summary>La factura y la recepción difieren en centavos.</summary>
+                <p>La factura va en pesos enteros y lo devengado puede tener centavos. GESPRO concilia lo pendiente redondeado al peso, y la factura queda conciliada.</p>
+            </details>
+            <details>
+                <summary>El proveedor facturó más de lo recibido.</summary>
+                <p>GESPRO no deja conciliar más de lo que le queda por facturar al documento. Concilia lo que corresponde y pon la factura en disputa con la diferencia en el motivo.</p>
+            </details>
+            <details>
+                <summary>¿Y las notas de crédito?</summary>
+                <p>Se registran como las facturas, con su tipo, pero no se concilian con recepciones ni estados de pago.</p>
+            </details>
+            <details>
+                <summary>¿Qué pasa si cierro el mes con facturas pendientes?</summary>
+                <p>El cierre no se detiene: avisa lo recibido sin factura completa y las facturas sin conciliar, para que control de gestión lo vea.</p>
+            </details>
+            <details>
+                <summary>No hay UF para un día.</summary>
+                <p>Regístrala aquí. Un documento de ese día no se valoriza con la UF de otro día: espera a que exista la suya.</p>
+            </details>
+        </section>
+
+        <footer>
+            GESPRO · Manual de finanzas · Las capturas son de la demostración, con datos ficticios de la constructora Altamira.
+        </footer>
+    </main>
+</div>
+</body>
+</html>

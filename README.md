@@ -8,6 +8,7 @@ Los manuales de usuario de GESPRO, uno por rol, como sitio estático:
 | Administración de obra | `administracion-de-obra/` |
 | Jefe administrativo | `jefe-administrativo/` |
 | Presupuesto | `presupuesto/` |
+| Finanzas | `finanzas/` |
 | Abastecimiento | `abastecimiento/` |
 | Bodega | `bodega/` |
 | Control de gestión | `control-de-gestion/` |
