@@ -14,6 +14,7 @@ Los manuales de usuario de GESPRO, uno por rol, como sitio estático:
 | Control de gestión | `control-de-gestion/` |
 | Gerente de construcción | `gerente-construccion/` |
 | Gerencia | `gerencia/` |
+| Administrador | `administrador/` |
 
 `index.html` es la portada. Publicado en <https://gespro.enterweb.cl/manuales/>.
 

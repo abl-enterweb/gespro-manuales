@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Para quien configura GESPRO en la empresa: las empresas del holding, las personas y sus roles, las obras con sus cargos y su gente, y las cadenas que deciden quién aprueba cada documento.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' rx='4' fill='%232c50c4'/%3E%3Crect x='3' y='11' width='3.5' height='6' rx='0.6' fill='white'/%3E%3Crect x='8.25' y='7' width='3.5' height='10' rx='0.6' fill='white'/%3E%3Crect x='13.5' y='3' width='3.5' height='14' rx='0.6' fill='white'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Manual del administrador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: índice fijo a la izquierda y una columna de lectura; las capturas
+   se ensanchan más que el texto. Colores de GESPRO (docs/10 §8.6) y el
+   naranjo de los recuadros numerados de las capturas. */
+:root {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --pane: #f6f7fa;
+    --line: #dde1e8;
+    --ink: #131821;
+    --ink-muted: #525d6d;
+    --brand: #2c50c4;
+    --accent-soft: #e7ecfb;
+    --ok: #0b6e3c;
+    --ok-soft: #e0f2e7;
+    --warn: #874c00;
+    --warn-soft: #fcefd6;
+    --bad: #b0161c;
+    --mark: #e8590c;
+    --mark-ink: #ffffff;
+    --shadow: rgb(14 24 44 / 0.10);
+    --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --measure: 42rem;
+    color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+        --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+        --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+        --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+    --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+    --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+    --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1rem/1.65 var(--font-body);
+    padding-inline: 16px;
+    padding-block: 0 4rem;
+}
+.layout {
+    display: grid;
+    gap: 3rem;
+    max-width: 76rem;
+    margin-inline: auto;
+}
+@media (min-width: 64rem) {
+    .layout { grid-template-columns: 15rem minmax(0, 1fr); }
+}
+
+/* Índice */
+.toc {
+    padding-block: 2rem 0;
+    font-size: 0.9rem;
+}
+@media (min-width: 64rem) {
+    .toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 2.5rem; }
+}
+.toc .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; letter-spacing: 0.02em; }
+.toc .logo { width: 2rem; height: 2rem; border-radius: 0.5rem; background: var(--brand); display: grid; place-items: center; }
+.toc .logo svg { width: 1.1rem; height: 1.1rem; }
+.toc .logo rect { fill: var(--surface); }
+.toc p { color: var(--ink-muted); margin: 0.75rem 0 1.25rem; font-size: 0.85rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a {
+    display: grid; grid-template-columns: 1.6rem 1fr; padding: 0.3rem 0.5rem; border-radius: 0.4rem;
+    color: var(--ink-muted); text-decoration: none;
+}
+.toc a::before { content: counter(toc); font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); padding-top: 0.1rem; }
+.toc a:hover, .toc a:focus-visible { background: var(--accent-soft); color: var(--ink); outline: none; }
+
+/* Contenido */
+main { min-width: 0; padding-block: 2.5rem 0; }
+header.hero { max-width: var(--measure); padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin: 0; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; font-weight: 700; margin: 0.4rem 0 0.8rem; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { font-size: 1.12rem; color: var(--ink-muted); margin: 0; }
+.persona {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.25rem; padding: 0.9rem 1rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; font-size: 0.92rem;
+}
+.persona dt { color: var(--ink-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.persona dd { margin: 0; font-weight: 500; }
+
+section { padding-top: 3rem; scroll-margin-top: 1rem; }
+section > :not(figure):not(.wide) { max-width: var(--measure); }
+h2 { font-size: 1.55rem; line-height: 1.25; font-weight: 700; margin: 0 0 0.75rem; text-wrap: balance; }
+h2 .n { font-family: var(--font-mono); font-weight: 500; color: var(--ink-muted); font-size: 1rem; margin-right: 0.6rem; }
+h3 { font-size: 1.1rem; font-weight: 600; margin: 1.75rem 0 0.4rem; }
+p { margin: 0 0 0.9rem; }
+strong { font-weight: 600; }
+.ui { font-weight: 600; white-space: nowrap; }
+code, kbd, .folio { font-family: var(--font-mono); font-size: 0.88em; }
+kbd {
+    padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 0.3rem;
+    background: var(--surface); white-space: nowrap;
+}
+
+figure { margin: 1.25rem 0 1.5rem; max-width: 62rem; }
+figure img {
+    display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 0.6rem;
+    box-shadow: 0 6px 24px -10px var(--shadow); background: var(--surface);
+}
+figure.phone { max-width: 22rem; }
+.phones { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.phones figure { margin: 0; flex: 1 1 15rem; max-width: 20rem; }
+figcaption { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.5rem; }
+
+/* Pasos con el número del recuadro de la captura */
+ol.steps { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.55rem; counter-reset: step; }
+ol.steps > li { counter-increment: step; position: relative; padding-left: 2.4rem; min-height: 1.7rem; }
+ol.steps > li::before {
+    content: counter(step); position: absolute; left: 0; top: 0.05rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--mark); color: var(--mark-ink); font: 600 0.82rem/1.6rem var(--font-body); text-align: center;
+}
+
+.note {
+    display: grid; gap: 0.25rem; padding: 0.85rem 1rem; border-radius: 0.6rem; margin: 1rem 0 1.25rem;
+    background: var(--accent-soft); font-size: 0.95rem;
+}
+.note b { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); }
+.note.warn { background: var(--warn-soft); }
+.note.warn b { color: var(--warn); }
+.note p:last-child { margin: 0; }
+
+dl.terms { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: 0.5rem 1.25rem; margin: 0 0 1rem; font-size: 0.95rem; }
+dl.terms dt { font-weight: 600; }
+dl.terms dd { margin: 0; color: var(--ink-muted); }
+@media (max-width: 34rem) { dl.terms { grid-template-columns: 1fr; } dl.terms dd { margin-bottom: 0.5rem; } }
+
+.table-wrap { overflow-x: auto; max-width: 52rem; margin: 1rem 0 1.25rem; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); background: var(--pane); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.when { color: var(--ink-muted); }
+
+.pair { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); max-width: 52rem; margin: 1rem 0; }
+.pair > div { background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; padding: 1rem; }
+.pair h4 { margin: 0 0 0.35rem; font-size: 1rem; }
+.pair p { margin: 0; font-size: 0.93rem; color: var(--ink-muted); }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 99rem; margin-bottom: 0.4rem; }
+.tag.ok { background: var(--ok-soft); color: var(--ok); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+.tag.bad { background: var(--warn-soft); color: var(--bad); }
+
+details { border-top: 1px solid var(--line); padding-block: 0.8rem; max-width: var(--measure); }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; }
+summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 0.2rem; }
+details p { margin: 0.6rem 0 0; color: var(--ink-muted); }
+
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--ink-muted); font-size: 0.85rem; max-width: var(--measure); }
+a { color: var(--brand); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* El camino de una compra, en pasos con quién los da */
+ol.flow { list-style: none; padding: 0; margin: 1.25rem 0 1.5rem; display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); max-width: 62rem; counter-reset: flow; }
+ol.flow li {
+    counter-increment: flow; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem;
+    padding: 0.75rem 0.8rem 0.8rem; font-size: 0.9rem; line-height: 1.4;
+}
+ol.flow li::before { content: counter(flow, decimal-leading-zero); display: block; font: 500 0.75rem/1 var(--font-mono); color: var(--ink-muted); margin-bottom: 0.45rem; }
+ol.flow li b { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+ol.flow li span { color: var(--ink-muted); font-size: 0.82rem; }
+ol.flow li.mine { border-color: var(--brand); background: var(--accent-soft); }
+.toc .back{display:inline-flex;gap:.35rem;margin-bottom:1rem;color:var(--brand);text-decoration:none;font-weight:600;font-size:.85rem}
+.toc a.back::before{content:none}
+.toc .back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="layout">
+    <nav class="toc" aria-label="Contenido del manual">
+        <a class="back" href="../">← Todos los manuales</a>
+        <div class="brand">
+            <span class="logo" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="3" y="11" width="3.5" height="6" rx="0.6"/><rect x="8.25" y="7" width="3.5" height="10" rx="0.6"/><rect x="13.5" y="3" width="3.5" height="14" rx="0.6"/></svg></span>
+            GESPRO
+        </div>
+        <p>Manual de usuario · administrador</p>
+        <ol>
+            <li><a href="#rol">Lo que hace el administrador</a></li>
+            <li><a href="#empresas">Las empresas</a></li>
+            <li><a href="#personas">Las personas y sus roles</a></li>
+            <li><a href="#obra">Preparar una obra</a></li>
+            <li><a href="#cadenas">Las cadenas de visación</a></li>
+            <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ol>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <p class="eyebrow">Manual de usuario</p>
+            <h1>Administrador en GESPRO</h1>
+            <p class="lede">Para quien configura GESPRO en la empresa: las empresas del holding, las personas y sus roles, las obras con sus cargos y su gente, y las cadenas que deciden quién aprueba cada documento.</p>
+            <dl class="persona">
+                <div><dt>Rol en GESPRO</dt><dd>Administrador</dd></div>
+                <div><dt>Sus pantallas</dt><dd>Administración › Empresas · Obras · Usuarios · Visaciones · Auditoría</dd></div>
+                <div><dt>Ejemplos con</dt><dd>Rodrigo Fuentes · holding Altamira</dd></div>
+            </dl>
+        </header>
+
+        <section id="rol">
+            <h2><span class="n">1</span>Lo que hace el administrador</h2>
+            <p>El administrador deja todo listo para que la obra trabaje, pero no opera ni aprueba documentos: ve todas las obras, en solo lectura. Lo que configura decide quién puede hacer qué y quién firma. Los pasos destacados son los de este manual.</p>
+            <ol class="flow">
+                <li class="mine"><b>Empresa</b><span>RUT, IVA y plantillas de PDF.</span></li>
+                <li class="mine"><b>Personas</b><span>Usuarios y roles.</span></li>
+                <li class="mine"><b>Obra</b><span>Cargos y membresías.</span></li>
+                <li class="mine"><b>Cadenas</b><span>Quién aprueba cada documento.</span></li>
+                <li><b>La obra se activa</b><span>Con presupuesto, bodega y período.</span></li>
+            </ol>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Concepto</th><th>Qué decide</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Rol</strong></td><td>Qué acciones puede hacer la persona. Los roles se suman.</td></tr>
+                        <tr><td><strong>Membresía</strong></td><td>En qué obra, con qué rol y desde cuándo hasta cuándo. Sin membresía vigente no se entra a la obra.</td></tr>
+                        <tr><td><strong>Cargo</strong></td><td>Quién firma los documentos de la obra: el profesional de obra, el supervisor, el jefe administrativo y los demás. Su firma sale en los PDF.</td></tr>
+                        <tr><td><strong>Cadena de visación</strong></td><td>Los pasos, en orden, por los que pasa cada tipo de documento antes de aprobarse.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="empresas">
+            <h2><span class="n">2</span>Las empresas</h2>
+            <p>En <span class="ui">Administración › Empresas</span> están las empresas del holding. Cada obra pertenece a una, y sus datos salen en todos los documentos.</p>
+            <figure>
+                <img src="img/01-empresas.png" alt="Empresas del holding Altamira: Altamira Postventa y Altamira Construcciones, con su RUT, plantillas, IVA y obras." width="1440" height="420" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Las empresas</strong>, con su RUT, sus plantillas, su IVA y cuántas obras tienen.</li>
+                <li><strong>Nueva empresa</strong>, para sumar otra razón social al holding.</li>
+            </ol>
+            <figure>
+                <img src="img/02-empresa.png" alt="Ficha de Constructora Altamira SpA con su RUT, razón social, nombre de fantasía, dirección, IVA y plantillas de PDF." width="1440" height="640" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Los datos de la empresa</strong>: el RUT, la razón social, el nombre de fantasía, la dirección, el IVA y las plantillas con que se imprimen sus PDF.</li>
+            </ol>
+        </section>
+
+        <section id="personas">
+            <h2><span class="n">3</span>Las personas y sus roles</h2>
+            <p>En <span class="ui">Administración › Usuarios</span> se da de alta a quien entra a GESPRO. Aquí, Ignacio Soto, el bodeguero de la obra nueva.</p>
+            <figure>
+                <img src="img/03-usuarios.png" alt="Usuarios con el formulario de nuevo usuario para Ignacio Soto Barría, el buscador, el filtro por rol y la lista de personas." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Nuevo usuario</strong>: nombre, correo, cargo y una clave inicial, que se le entrega a la persona. <span class="ui">Crear usuario</span> abre su ficha.</li>
+                <li><strong>Buscar</strong> por nombre o correo.</li>
+                <li><strong>Filtrar</strong> por rol o por estado.</li>
+            </ol>
+            <figure>
+                <img src="img/04-usuario.png" alt="Ficha de Ignacio Soto con su último ingreso, el estado de los dos factores y los roles, con Bodeguero marcado." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Los roles</strong>, cada uno con lo que permite. Se suman: quien es bodeguero y supervisor recibe los dos.</li>
+                <li><strong>Guardar roles.</strong> Arriba, cuándo entró por última vez y si configuró los dos factores; algunos roles los exigen.</li>
+            </ol>
+            <p class="note"><b>Para tener en cuenta</b>Un usuario no se borra: se desactiva, con motivo, y conserva su historia. Todo lo que firmó sigue a su nombre.</p>
+        </section>
+
+        <section id="obra">
+            <h2><span class="n">4</span>Preparar una obra</h2>
+            <p>En <span class="ui">Administración › Obras</span>, <span class="ui">Nueva obra</span> la crea con su código, su empresa, sus fechas y su control presupuestario. Nace en preparación.</p>
+            <figure>
+                <img src="img/05-obra-nueva.png" alt="Obra 1230 Edificio Mirador del Volcán en preparación, con lo que le falta para activarse." width="1440" height="420" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Lo que le falta</strong>: un presupuesto aprobado, una bodega y un período de control abierto. Cuando los tiene, se activa sola.</li>
+            </ol>
+            <figure>
+                <img src="img/06-cargos.png" alt="Cargos y firmas de la obra 1230 con Javiera Contreras como profesional de obra y el formulario para asignar un cargo." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Los cargos</strong>: quién ocupa cada uno y su firma.</li>
+                <li><strong>Asignar un cargo</strong>: el cargo, la persona y su firma en PNG o JPG, que sale en los PDF. Un cargo lo puede ocupar alguien que no entra al sistema.</li>
+            </ol>
+            <figure>
+                <img src="img/07-membresias.png" alt="Membresías de la obra 1230 con Javiera Contreras como profesional de obra e Ignacio Soto como bodeguero, y el formulario para agregar a alguien." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Quién trabaja en la obra</strong>, con su rol en ella y su vigencia.</li>
+                <li><strong>La persona.</strong></li>
+                <li><strong>Su rol en la obra</strong>: según sus roles, o uno en particular.</li>
+                <li><strong>Agregar a la obra.</strong> Con <em>Desde</em> y <em>Hasta</em>, la membresía vence sola: sirve para un reemplazo o una visita.</li>
+            </ol>
+        </section>
+
+        <section id="cadenas">
+            <h2><span class="n">5</span>Las cadenas de visación</h2>
+            <p>En <span class="ui">Administración › Visaciones</span> está la cadena de cada tipo de documento. Una obra puede tener la suya; si no, usa la de su empresa.</p>
+            <figure>
+                <img src="img/08-cadenas.png" alt="Cadenas de visación de Altamira Construcciones: presupuesto, modificación presupuestaria, gasto directo, estado de pago y otros, con sus pasos." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La empresa</strong> cuyas cadenas se ven.</li>
+                <li><strong>Las cadenas</strong>: el documento, a qué alcanza, sus pasos en orden y su versión. <span class="ui">Editar</span> abre una.</li>
+            </ol>
+            <p>Aquí, los gastos directos de cinco millones o más pasan además por el gerente de construcción.</p>
+            <figure>
+                <img src="img/09-cadena.png" alt="Cadena del gasto directo con un segundo paso para el gerente de construcción desde $ 5.000.000 y el botón Guardar como versión nueva." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Quién firma el paso</strong>: un cargo de la obra, con un rol de respaldo si el cargo está vacío, o una persona fija.</li>
+                <li><strong>Desde qué monto</strong> aplica. También se puede limitar con <em>Hasta monto</em> o con <em>Cuándo aplica</em>.</li>
+                <li><strong>Guardar como versión nueva.</strong> Los documentos que ya están en visación siguen con la cadena con que partieron.</li>
+            </ol>
+        </section>
+
+        <section id="preguntas">
+            <h2><span class="n">6</span>Preguntas frecuentes</h2>
+            <details>
+                <summary>¿Por qué el administrador ve las obras en solo lectura?</summary>
+                <p>Así lo define su rol: configura el sistema, pero no opera ni aprueba documentos. Para operar en una obra hace falta otro rol y una membresía en ella.</p>
+            </details>
+            <details>
+                <summary>Alguien dejó la empresa.</summary>
+                <p>Desactiva su usuario con el motivo: ya no entra, y lo que firmó queda en la historia. Si ocupaba un cargo, asigna a quien lo reemplaza.</p>
+            </details>
+            <details>
+                <summary>Una persona ve una obra que no debería.</summary>
+                <p>Revisa sus membresías en la ficha de esa obra: el rol da la acción, la membresía da el acceso. Desactívala ahí.</p>
+            </details>
+            <details>
+                <summary>¿Dónde veo quién cambió algo?</summary>
+                <p>En <span class="ui">Administración › Auditoría</span>, con filtros por obra, documento, acción y fechas. La ficha de cada obra muestra lo último y enlaza a su historia completa.</p>
+            </details>
+        </section>
+
+        <footer>
+            GESPRO · Manual del administrador · Las capturas son de la demostración, con datos ficticios de la constructora Altamira.
+        </footer>
+    </main>
+</div>
+</body>
+</html>
