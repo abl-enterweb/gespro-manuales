@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Para quien lleva la administración de la obra: la caja chica, los papeles y los cobros de los subcontratistas, las remuneraciones que llegan de BUK y los tratos. Todo lo que aquí se aprueba o se confirma pasa a ser costo de una partida.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' rx='4' fill='%232c50c4'/%3E%3Crect x='3' y='11' width='3.5' height='6' rx='0.6' fill='white'/%3E%3Crect x='8.25' y='7' width='3.5' height='10' rx='0.6' fill='white'/%3E%3Crect x='13.5' y='3' width='3.5' height='14' rx='0.6' fill='white'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Manual del jefe administrativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: índice fijo a la izquierda y una columna de lectura; las capturas
+   se ensanchan más que el texto. Colores de GESPRO (docs/10 §8.6) y el
+   naranjo de los recuadros numerados de las capturas. */
+:root {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --pane: #f6f7fa;
+    --line: #dde1e8;
+    --ink: #131821;
+    --ink-muted: #525d6d;
+    --brand: #2c50c4;
+    --accent-soft: #e7ecfb;
+    --ok: #0b6e3c;
+    --ok-soft: #e0f2e7;
+    --warn: #874c00;
+    --warn-soft: #fcefd6;
+    --bad: #b0161c;
+    --mark: #e8590c;
+    --mark-ink: #ffffff;
+    --shadow: rgb(14 24 44 / 0.10);
+    --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --measure: 42rem;
+    color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+        --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+        --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+        --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #0d1118; --surface: #151a23; --pane: #121720; --line: #2a3242;
+    --ink: #e6eaf1; --ink-muted: #a6afbe; --brand: #8ea5ff; --accent-soft: #1d2747;
+    --ok: #55c891; --ok-soft: #14301f; --warn: #f2b45c; --warn-soft: #38280f; --bad: #ff8f93;
+    --mark: #ff8a4c; --mark-ink: #1a0d05; --shadow: rgb(0 0 0 / 0.4);
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1rem/1.65 var(--font-body);
+    padding-inline: 16px;
+    padding-block: 0 4rem;
+}
+.layout {
+    display: grid;
+    gap: 3rem;
+    max-width: 76rem;
+    margin-inline: auto;
+}
+@media (min-width: 64rem) {
+    .layout { grid-template-columns: 15rem minmax(0, 1fr); }
+}
+
+/* Índice */
+.toc {
+    padding-block: 2rem 0;
+    font-size: 0.9rem;
+}
+@media (min-width: 64rem) {
+    .toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 2.5rem; }
+}
+.toc .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; letter-spacing: 0.02em; }
+.toc .logo { width: 2rem; height: 2rem; border-radius: 0.5rem; background: var(--brand); display: grid; place-items: center; }
+.toc .logo svg { width: 1.1rem; height: 1.1rem; }
+.toc .logo rect { fill: var(--surface); }
+.toc p { color: var(--ink-muted); margin: 0.75rem 0 1.25rem; font-size: 0.85rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a {
+    display: grid; grid-template-columns: 1.6rem 1fr; padding: 0.3rem 0.5rem; border-radius: 0.4rem;
+    color: var(--ink-muted); text-decoration: none;
+}
+.toc a::before { content: counter(toc); font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); padding-top: 0.1rem; }
+.toc a:hover, .toc a:focus-visible { background: var(--accent-soft); color: var(--ink); outline: none; }
+
+/* Contenido */
+main { min-width: 0; padding-block: 2.5rem 0; }
+header.hero { max-width: var(--measure); padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin: 0; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; font-weight: 700; margin: 0.4rem 0 0.8rem; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { font-size: 1.12rem; color: var(--ink-muted); margin: 0; }
+.persona {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.25rem; padding: 0.9rem 1rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; font-size: 0.92rem;
+}
+.persona dt { color: var(--ink-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.persona dd { margin: 0; font-weight: 500; }
+
+section { padding-top: 3rem; scroll-margin-top: 1rem; }
+section > :not(figure):not(.wide) { max-width: var(--measure); }
+h2 { font-size: 1.55rem; line-height: 1.25; font-weight: 700; margin: 0 0 0.75rem; text-wrap: balance; }
+h2 .n { font-family: var(--font-mono); font-weight: 500; color: var(--ink-muted); font-size: 1rem; margin-right: 0.6rem; }
+h3 { font-size: 1.1rem; font-weight: 600; margin: 1.75rem 0 0.4rem; }
+p { margin: 0 0 0.9rem; }
+strong { font-weight: 600; }
+.ui { font-weight: 600; white-space: nowrap; }
+code, kbd, .folio { font-family: var(--font-mono); font-size: 0.88em; }
+kbd {
+    padding: 0.05rem 0.4rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 0.3rem;
+    background: var(--surface); white-space: nowrap;
+}
+
+figure { margin: 1.25rem 0 1.5rem; max-width: 62rem; }
+figure img {
+    display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 0.6rem;
+    box-shadow: 0 6px 24px -10px var(--shadow); background: var(--surface);
+}
+figure.phone { max-width: 22rem; }
+.phones { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.phones figure { margin: 0; flex: 1 1 15rem; max-width: 20rem; }
+figcaption { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.5rem; }
+
+/* Pasos con el número del recuadro de la captura */
+ol.steps { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.55rem; counter-reset: step; }
+ol.steps > li { counter-increment: step; position: relative; padding-left: 2.4rem; min-height: 1.7rem; }
+ol.steps > li::before {
+    content: counter(step); position: absolute; left: 0; top: 0.05rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--mark); color: var(--mark-ink); font: 600 0.82rem/1.6rem var(--font-body); text-align: center;
+}
+
+.note {
+    display: grid; gap: 0.25rem; padding: 0.85rem 1rem; border-radius: 0.6rem; margin: 1rem 0 1.25rem;
+    background: var(--accent-soft); font-size: 0.95rem;
+}
+.note b { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); }
+.note.warn { background: var(--warn-soft); }
+.note.warn b { color: var(--warn); }
+.note p:last-child { margin: 0; }
+
+dl.terms { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: 0.5rem 1.25rem; margin: 0 0 1rem; font-size: 0.95rem; }
+dl.terms dt { font-weight: 600; }
+dl.terms dd { margin: 0; color: var(--ink-muted); }
+@media (max-width: 34rem) { dl.terms { grid-template-columns: 1fr; } dl.terms dd { margin-bottom: 0.5rem; } }
+
+.table-wrap { overflow-x: auto; max-width: 52rem; margin: 1rem 0 1.25rem; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); background: var(--pane); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.when { color: var(--ink-muted); }
+
+.pair { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); max-width: 52rem; margin: 1rem 0; }
+.pair > div { background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; padding: 1rem; }
+.pair h4 { margin: 0 0 0.35rem; font-size: 1rem; }
+.pair p { margin: 0; font-size: 0.93rem; color: var(--ink-muted); }
+.tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 99rem; margin-bottom: 0.4rem; }
+.tag.ok { background: var(--ok-soft); color: var(--ok); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+.tag.bad { background: var(--warn-soft); color: var(--bad); }
+
+details { border-top: 1px solid var(--line); padding-block: 0.8rem; max-width: var(--measure); }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; }
+summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 0.2rem; }
+details p { margin: 0.6rem 0 0; color: var(--ink-muted); }
+
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--ink-muted); font-size: 0.85rem; max-width: var(--measure); }
+a { color: var(--brand); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* El camino de una compra, en pasos con quién los da */
+ol.flow { list-style: none; padding: 0; margin: 1.25rem 0 1.5rem; display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); max-width: 62rem; counter-reset: flow; }
+ol.flow li {
+    counter-increment: flow; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem;
+    padding: 0.75rem 0.8rem 0.8rem; font-size: 0.9rem; line-height: 1.4;
+}
+ol.flow li::before { content: counter(flow, decimal-leading-zero); display: block; font: 500 0.75rem/1 var(--font-mono); color: var(--ink-muted); margin-bottom: 0.45rem; }
+ol.flow li b { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+ol.flow li span { color: var(--ink-muted); font-size: 0.82rem; }
+ol.flow li.mine { border-color: var(--brand); background: var(--accent-soft); }
+.toc .back{display:inline-flex;gap:.35rem;margin-bottom:1rem;color:var(--brand);text-decoration:none;font-weight:600;font-size:.85rem}
+.toc a.back::before{content:none}
+.toc .back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="layout">
+    <nav class="toc" aria-label="Contenido del manual">
+        <a class="back" href="../">← Todos los manuales</a>
+        <div class="brand">
+            <span class="logo" aria-hidden="true"><svg viewBox="0 0 20 20"><rect x="3" y="11" width="3.5" height="6" rx="0.6"/><rect x="8.25" y="7" width="3.5" height="10" rx="0.6"/><rect x="13.5" y="3" width="3.5" height="14" rx="0.6"/></svg></span>
+            GESPRO
+        </div>
+        <p>Manual de usuario · jefe administrativo</p>
+        <ol>
+            <li><a href="#rol">Lo que hace el jefe administrativo</a></li>
+            <li><a href="#vales">Aprobar los vales de caja chica</a></li>
+            <li><a href="#rendicion">Rendir y reponer la caja chica</a></li>
+            <li><a href="#documentos">Los documentos del subcontratista</a></li>
+            <li><a href="#firma">Tu firma en el estado de pago</a></li>
+            <li><a href="#mano">La mano de obra de BUK</a></li>
+            <li><a href="#tratos">Los tratos</a></li>
+            <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ol>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <p class="eyebrow">Manual de usuario</p>
+            <h1>Jefe administrativo en GESPRO</h1>
+            <p class="lede">Para quien lleva la administración de la obra: la caja chica, los papeles y los cobros de los subcontratistas, las remuneraciones que llegan de BUK y los tratos. Todo lo que aquí se aprueba o se confirma pasa a ser costo de una partida.</p>
+            <dl class="persona">
+                <div><dt>Rol en GESPRO</dt><dd>Jefe administrativo</dd></div>
+                <div><dt>Sus pantallas</dt><dd>Bandeja · Caja chica · Subcontratos · Estados de pago · Mano de obra · Tratos</dd></div>
+                <div><dt>Ejemplos con</dt><dd>Carolina Pizarro · obra 1201 Edificio Mirador del Lago</dd></div>
+            </dl>
+        </header>
+
+        <section id="rol">
+            <h2><span class="n">1</span>Lo que hace el jefe administrativo</h2>
+            <p>El jefe administrativo cuida que cada peso que sale de la obra tenga su respaldo y su partida. No compra ni mide: revisa, rinde y confirma lo que otros registran. Los pasos destacados son los de este manual.</p>
+            <ol class="flow">
+                <li class="mine"><b>Vales de caja chica</b><span>Los aprueba con su boleta.</span></li>
+                <li class="mine"><b>Rendición</b><span>Junta los vales y repone el fondo.</span></li>
+                <li class="mine"><b>Subcontratos</b><span>Exige y guarda sus documentos.</span></li>
+                <li class="mine"><b>Estados de pago</b><span>Firma después de la obra.</span></li>
+                <li class="mine"><b>Mano de obra</b><span>Carga y confirma BUK cada mes.</span></li>
+                <li class="mine"><b>Tratos</b><span>Trabajo pagado por cantidad.</span></li>
+                <li><b>Cierre del mes</b><span>Control de gestión cierra con todo eso.</span></li>
+            </ol>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Quién</th><th>Qué hace con lo del jefe administrativo</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Custodio de la caja chica</strong></td><td>Paga, arma los vales con la boleta y los envía.</td></tr>
+                        <tr><td><strong>Profesional de obra</strong></td><td>Visa la rendición de la caja chica y firma antes que tú los estados de pago.</td></tr>
+                        <tr><td><strong>Digitador</strong></td><td>Arma los contratos y los estados de pago, y los reenvía cuando vuelven observados.</td></tr>
+                        <tr><td><strong>Control de gestión</strong></td><td>No cierra el mes con una importación de mano de obra sin confirmar.</td></tr>
+                        <tr><td><strong>Finanzas</strong></td><td>Registra la factura del subcontratista cuando el estado de pago se aprueba.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="vales">
+            <h2><span class="n">2</span>Aprobar los vales de caja chica</h2>
+            <p>El inicio cuenta lo que espera tu firma. Los vales de caja chica llegan a la bandeja con su monto y quien los armó.</p>
+            <figure>
+                <img src="img/01-inicio.png" alt="Inicio de Carolina Pizarro con un documento por visar, las cifras de la obra 1201 y lo que envió y sigue en visación." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La bandeja</strong>: un documento por visar. Debajo, las cifras de tus obras y lo que enviaste y sigue en visación.</li>
+            </ol>
+            <figure>
+                <img src="img/02-bandeja.png" alt="Bandeja con el vale de caja chica VC-2026-000010 por $ 96.000, su cadena de un solo paso y el botón Aprobar." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El vale</strong>: concepto, monto, quién lo armó y desde cuándo espera.</li>
+                <li><strong>La cadena</strong> de un vale tiene un solo paso: el tuyo.</li>
+                <li><strong>Aprobar</strong> lo deja como costo de su partida. Durante unos segundos se puede deshacer. <span class="ui">Abrir el documento completo</span> muestra la boleta antes de decidir; si falta o no se lee, <span class="ui">Observar</span> lo devuelve al custodio.</li>
+            </ol>
+        </section>
+
+        <section id="rendicion">
+            <h2><span class="n">3</span>Rendir y reponer la caja chica</h2>
+            <p>Lo que la caja chica gastó se repone con una rendición. En <span class="ui">Gastos y mano de obra › Caja chica</span>, el fondo muestra cuánto tiene y cuánto ya está aprobado esperando rendirse.</p>
+            <figure>
+                <img src="img/03-fondo.png" alt="Fondo Caja chica de obra con $ 600.000 autorizados, $ 504.000 disponibles, $ 96.000 aprobados sin rendir y el botón Armar rendición." width="1440" height="560" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El saldo del fondo</strong>: lo autorizado, lo gastado que todavía no se repone, lo disponible y lo aprobado sin rendir.</li>
+                <li><strong>Armar rendición</strong> junta en un documento todos los vales aprobados que no están en otra rendición.</li>
+            </ol>
+            <figure>
+                <img src="img/04-rendicion.png" alt="Rendición RC-2026-000004 en borrador por $ 96.000 con el vale VC-2026-000010 y el botón Enviar a aprobación." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Lo rendido</strong>: la suma de los vales.</li>
+                <li><strong>Los vales</strong> de la rendición, cada uno con su partida. El folio abre el vale con su boleta.</li>
+                <li><strong>Enviar a aprobación</strong> la manda al profesional de obra.</li>
+            </ol>
+            <figure>
+                <img src="img/05-reposicion.png" alt="Rendición aprobada por Javiera Contreras con la fecha de reposición y el botón Registrar reposición." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Repuesta el</strong>: el día en que el dinero volvió al custodio.</li>
+                <li><strong>Registrar reposición</strong> devuelve al fondo lo rendido: aquí, lo disponible vuelve a $ 600.000.</li>
+            </ol>
+            <p class="note"><b>Para tener en cuenta</b>El costo entra al aprobar cada vale, no al reponer. La rendición mueve dinero, no costo: por eso el informe de la obra no cambia cuando se repone.</p>
+        </section>
+
+        <section id="documentos">
+            <h2><span class="n">4</span>Los documentos del subcontratista</h2>
+            <p>Cada subcontrato exige sus documentos: el F30, la póliza, el F30-1 de cada mes y la nómina. Un estado de pago no debería avanzar si falta uno. Aquí, terreno observó el estado de pago N° 4 de la instalación eléctrica.</p>
+            <figure>
+                <img src="img/06-ep-observado.png" alt="Estado de pago EP-2026-000011 observado por Matías Vidal porque falta el certificado F30-1 del mes." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>La observación</strong> dice qué falta: el F30-1 del mes. El estado de pago vuelve a quien lo armó y la cadena se detiene.</li>
+            </ol>
+            <p>El documento se sube en el contrato: el enlace del subcontrato, arriba del estado de pago, lo abre.</p>
+            <figure>
+                <img src="img/07-documentos.png" alt="Documentos exigidos del subcontrato SC-2026-000003 con el archivo del F30-1 elegido, su vencimiento y el botón Subir." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El archivo</strong>, en PDF o en foto.</li>
+                <li><strong>Hasta cuándo vale.</strong> Con esa fecha, GESPRO sabe cuándo pedirlo de nuevo.</li>
+                <li><strong>Subir</strong> lo deja en el contrato, con el enlace <span class="ui">ver</span> y su vencimiento.</li>
+            </ol>
+            <p>Con el documento arriba, quien armó el estado de pago lo reenvía y la cadena vuelve a empezar desde terreno. Lo que falta, lo vencido y lo que vence en los próximos 30 días, en todos los contratos, está en <span class="ui">Contratos › Subcontratos › Ver documentos de subcontratistas</span>.</p>
+        </section>
+
+        <section id="firma">
+            <h2><span class="n">5</span>Tu firma en el estado de pago</h2>
+            <p>El estado de pago lo firman terreno, el profesional de obra, el jefe administrativo, el supervisor y el gerente de construcción, en ese orden. Cuando llega a ti, la obra ya confirmó las cantidades: tu revisión es la del contrato.</p>
+            <figure>
+                <img src="img/08-ep-firma.png" alt="Estado de pago N° 4 en visación con el jefe administrativo: el acumulado anterior, la cadena con terreno y profesional de obra aprobados y el botón Aprobar." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Acumulado anterior y acumulado:</strong> lo cobrado hasta el estado de pago anterior y lo que se cobra hasta este corte, contra lo contratado. Abajo, la retención, los descuentos, las multas y el anticipo que se amortiza.</li>
+                <li><strong>La cadena</strong>: quién ya firmó y quién sigue. Te toca a ti.</li>
+                <li><strong>Aprobar</strong> lo pasa al supervisor. Al aprobarse entero, el avance queda como costo de su partida y finanzas registra la factura.</li>
+            </ol>
+        </section>
+
+        <section id="mano">
+            <h2><span class="n">6</span>La mano de obra de BUK</h2>
+            <p>Cada mes, las remuneraciones de la obra entran desde el archivo que exporta BUK: una fila por persona y partida. En <span class="ui">Gastos y mano de obra › Mano de obra</span> se elige el mes y se carga el archivo.</p>
+            <figure>
+                <img src="img/09-mano-de-obra.png" alt="Mano de obra con el mes 10-2026, el archivo buk-2026-10.csv y las importaciones confirmadas de julio a septiembre." width="1440" height="640" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El mes</strong> de las remuneraciones.</li>
+                <li><strong>El archivo de BUK</strong>, tal como sale: siete columnas separadas por punto y coma.</li>
+                <li><strong>Cargar</strong> lo lee y valida cada fila por separado. Todavía no hay costo.</li>
+            </ol>
+            <figure>
+                <img src="img/10-importacion.png" alt="Importación MO-2026-000004 con 30 de 31 filas válidas y una con error porque la partida 2.6 no existe en la obra." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El resultado</strong>: filas válidas, filas con error y lo que costará.</li>
+                <li><strong>El error</strong> de cada fila, en palabras: aquí, una persona cargada en una partida que la obra no tiene.</li>
+                <li><strong>Corregir</strong> la arregla en pantalla. <span class="ui">Quitar</span> la saca, y un archivo corregido reemplaza solo las filas con error.</li>
+            </ol>
+            <figure>
+                <img src="img/11-corregir.png" alt="Fila 6 abierta para corregir, con la partida cambiada a 2.4 y el botón Guardar corrección." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>El dato que estaba mal</strong>: la partida correcta es la 2.4, moldajes.</li>
+                <li><strong>Guardar corrección</strong> vuelve a validar la fila. Queda marcada como corregida.</li>
+            </ol>
+            <figure>
+                <img src="img/12-confirmar.png" alt="Importación con 31 de 31 filas válidas, la partida no productiva para la provisión de finiquito y el botón Confirmar." width="1440" height="900" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Todo válido</strong>: 31 de 31.</li>
+                <li><strong>Confirmar</strong> lleva el costo al libro de la obra, por persona y partida. La provisión de finiquito va a la partida no productiva que se elige al lado; GESPRO propone la del mes anterior.</li>
+            </ol>
+            <p class="note"><b>Para tener en cuenta</b>Si BUK corrige el mes, se carga el archivo completo otra vez. Al confirmarlo, la importación anterior se revierte y la nueva la reemplaza: el costo no se duplica.</p>
+        </section>
+
+        <section id="tratos">
+            <h2><span class="n">7</span>Los tratos</h2>
+            <p>Un trato es trabajo pagado por cantidad: tantos metros a tanto el metro. En <span class="ui">Gastos y mano de obra › Tratos</span> se registra antes de empezar, para que la partida sepa lo que viene.</p>
+            <figure>
+                <img src="img/13-trato.png" alt="Formulario de trato para la cerámica de muros en baños de la torre A: cuadrilla de Juan Paredes, partida 4.2, 640 m2 a $ 6.500." width="1440" height="560" loading="lazy">
+            </figure>
+            <ol class="steps">
+                <li><strong>Quién lo toma</strong>: la cuadrilla o la persona.</li>
+                <li><strong>La partida</strong> a la que va.</li>
+                <li><strong>La cantidad</strong>, en su unidad.</li>
+                <li><strong>El precio</strong> por unidad. <span class="ui">Crear trato</span> lo registra.</li>
+            </ol>
+            <p>Un cambio de cantidad o de precio queda como una versión nueva del trato, con la anterior guardada. El pago no sale del trato: llega con la importación de BUK del mes, y <span class="ui">Mano de obra por partida</span> muestra lo pagado junto a los tratos vigentes.</p>
+        </section>
+
+        <section id="preguntas">
+            <h2><span class="n">8</span>Preguntas frecuentes</h2>
+            <details>
+                <summary>¿Por qué no puedo reenviar el estado de pago que observaron?</summary>
+                <p>Porque firmas en su cadena, y en GESPRO nadie aprueba lo que envió. Lo reenvía quien lo armó; tú subes lo que faltaba y firmas cuando te llegue.</p>
+            </details>
+            <details>
+                <summary>Un vale de caja chica pasa del tope.</summary>
+                <p>No se puede crear: el tope por vale está en la configuración del fondo. Si el gasto es mayor, va como otro gasto directo, en <span class="ui">Gastos y mano de obra › Otros gastos</span>, con la firma del profesional de obra.</p>
+            </details>
+            <details>
+                <summary>BUK trae a alguien que no trabaja en la obra.</summary>
+                <p><span class="ui">Quitar</span> saca esa fila de la importación sin tocar las demás. El archivo original queda adjunto, por si hay que explicar la diferencia.</p>
+            </details>
+            <details>
+                <summary>¿Puedo cerrar el mes sin la mano de obra?</summary>
+                <p>El cierre no avanza con una importación sin confirmar, y avisa si el mes no tiene mano de obra. Control de gestión lo ve en la lista del cierre.</p>
+            </details>
+        </section>
+
+        <footer>
+            GESPRO · Manual del jefe administrativo · Las capturas son de la demostración, con datos ficticios de la constructora Altamira.
+        </footer>
+    </main>
+</div>
+</body>
+</html>
